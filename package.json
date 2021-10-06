@@ -1,0 +1,23 @@
+{
+  "name": "myflix-client",
+  "version": "1.0.0",
+  "description": "",
+  "defuld": "src/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MikaelOmarTarhuni/myFlix-client.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MikaelOmarTarhuni/myFlix-client/issues"
+  },
+  "homepage": "https://github.com/MikaelOmarTarhuni/myFlix-client#readme",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
