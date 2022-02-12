@@ -1,13 +1,6 @@
-.my-flix {
-  color: steelblue;
-}
-
-.movie-card:hover, .movie-card focus {
-  cursor: pointer;
-}
 .login {
   margin-top: auto;
-  width: 700%;
+  width: 100%;
   padding: 30px;
   border: 0.3px solid grey;
   box-shadow: 5px 5px 5px grey;
@@ -49,7 +42,7 @@ body {
   border-style: none;
 }
 .app-container {
-  background-color: cornsilk;
+  background-color: rgba(0, 181, 231, 0.449);
 }
 
 .image-container {
@@ -87,4 +80,11 @@ body {
 .navbar-expand {
   margin: 15px;
 }
-/*# sourceMappingURL=index.caa67093.css.map */
+body {
+  background-color: steelblue;
+}
+
+.my-flix {
+  color: steelblue;
+}
+/*# sourceMappingURL=index.7deb4adb.css.map */

@@ -1,53 +1,47 @@
 import React from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
-
-export class NavBar extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {};
+export class NavView extends React.Component {
+  constructor (props) {
+    super (props)
+    console.log('Navbar loaded');
+    this.onLoggedOut = this.onLoggedOut.bind(this);
   }
-
-  onLoggedOut = () => {
-    localStorage.clear();
-    window.open('/', '_self');
+  
+  onLoggedOut () {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.setState({
+      user: null,
+      movies: []
+    });
   }
-
-  render() {
-    const { user } = this.props;
-    const movies = `/`;
-    const profile = `/users/${user}`;
-
-    if (!user) return null;
+  
+  render () {
 
     return (
-      <Navbar bg="dark" collapseOnSelect fixed='top' expand="lg" variant="dark" >
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ml-auto">
-
-            <Nav.Link as={Link} to={movies} className="link-text">
-              Movies
-            </Nav.Link>
-
-            <Nav.Link as={Link} to={profile} className="link-text">
-              Profile
-            </Nav.Link>
-
-            <Nav.Link to={'/'} onClick={this.onLoggedOut}>
-              Log Out
-            </Nav.Link>
-
-          </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" />
-          </Form>
-        </Navbar.Collapse>
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className="d-flex">
+      <Navbar.Brand as={Link} to={"/"}>MyFlix
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+      <Nav variant="pills" className="ml-auto">    
+        <Nav.Link as={Link} to={`/users/${this.props.user.Username}`}>Profile</Nav.Link>
+        <Nav.Link href="/" onClick={() => { this.onLoggedOut() }}>Log Out</Nav.Link>
+      </Nav>
+      </Navbar.Collapse>
       </Navbar>
     );
   }
 }
-export default NavBar;
+
+let mapStateToProps = state => {
+  return {
+    user: state.user,
+    movies: state.movies
+  }
+}
+
+export default connect(mapStateToProps)(NavView);

@@ -1,94 +1,142 @@
 import React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
-
 import Button from 'react-bootstrap/Button';
-import { Link } from "react-router-dom";
+import Card from 'react-bootstrap/Card';
+import Col from "react-bootstrap/Col";
 
 
-import { MovieCard } from '../movie-card/movie-card';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import './movie-view.scss';
 
 export class MovieView extends React.Component {
-
-  keypressCallback(event) {
-    console.log(event.key);
+  constructor(props) {
+    super(props);
+    this.state = {
+      FavoriteMovies: [],
+    };
   }
 
   componentDidMount() {
-    document.addEventListener('keypress', this.keypressCallback);
+    const accessToken = localStorage.getItem('token');
+    this.addFavorite(accessToken);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('keypress', this.keypressCallback);
-  }
+    addFavorite() {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("user");
 
-  addFavorite() {
-    const token = localStorage.getItem('token');
-    const username = localStorage.getItem('user');
-
-    axios.post(`https://myflixdb-mikael.herokuapp.com/users/${username}/movies/${this.props.movie._id}`, {}, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    axios
+      .post(
+        `https://myflixdb-mikael.herokuapp.com/users/${username}/movies/:MovieIDS${this.props.movie._id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
       .then(response => {
-        alert(`Added to Favorites List`)
       })
       .catch(function (error) {
         console.log(error);
       });
-  };
+  }
 
-  render() {
+  getFavorites(token) {
+    const username = localStorage.getItem('user');
+    const FavoriteMovies = this.state;
+
+    axios.get(`https://myflixdb-mikael.herokuapp.com/users/${username}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(response => {
+        this.setState({
+          FavoriteMovies: response.data.FavoriteMovies,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  removeFavorite() {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("user");
+
+    axios.delete(`https://myflixdb-mikael.herokuapp.com/users/${username}/movies/${this.props.movie._id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(response => {
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+
+  render () {
     const { movie, onBackClick } = this.props;
-
+    const { FavoriteMovies } = this.state;
 
     return (
-        <div className="movie-view">
-          <div className="movie-poster">
-            <img src={movie.ImageURL} />
-          </div>
-          <div className="movie-title">
-            <h1>
-              <Badge bg="primary">
-                <span className="value">{movie.Title}</span>
-              </Badge></h1>
-          </div>
-          <div className="movie-description">
-            <span className="value">{movie.Description}</span>
-          </div>
-          <div className="movie-genre">
-            <Link to={`/genres/${movie.Genre.Name}`}>
-              <Button variant="link">Genre: </Button>
-            </Link>
-            <span className="value">{movie.Genre.Name}</span>
-          </div>
-          <div className="movie-director">
-            <Link to={`/directors/${movie.Director.Name}`}>
-              <Button variant="link">Director: </Button>
-            </Link>
-            <span className="value">{movie.Director.Name}</span>
-          </div>
-          <Button variant='danger' className="fav-button" value={movie._id} onClick={(e) => this.addFavorite(e, movie)}>
-            Add to Favorites
-          </Button>
-          <Button variant="primary" onClick={() => { onBackClick(null); }}>Back</Button>
+      <div className="justify-content-center">
+      <Col>
+      <Card className="movie-view mt-3">
+        <div>
+          <Card.Img className="poster m-3" src={movie.ImagePath} />
         </div>
-      );
-    }
+        <Card.Body>
+          <span className="label">Title: </span>
+          <Card.Title className="movie-title">
+            <span className="value mx-2">{movie.Title}</span>
+          </Card.Title>
+          <span className="label">Description: </span>
+          <Card.Text className="movie-description ml-2 w-75">
+            <span className="value">{movie.Description}</span>
+          </Card.Text>
+          <span className="label">Directed by: </span>
+          <Card.Text className="movie-director ml-2">
+            {movie.Director.Name}
+          </Card.Text>
+          <Link to={`/directors/${movie.Director.Name}`}>
+            <Button variant="info" className="mr-1 mt-1">Director</Button>
+          </Link>
+          <Link to={`/genres/${movie.Genre.Name}`}>
+            <Button variant="info" className="mr-1 mt-1">Genre</Button>
+          </Link>
+          <Button variant="danger" className="mr-1 mt-1" onClick={() => { this.addFavorite(movie); }}>Favorite</Button>
+          <Button variant="secondary" className="mr-1 mt-1" onClick={() => { onBackClick(null); }}>Back</Button>
+        </Card.Body>
+      </Card>
+      </Col>
+      </div>
+    );
   }
-  
-
+}
 MovieView.propTypes = {
   movie: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     Title: PropTypes.string.isRequired,
     Description: PropTypes.string.isRequired,
-    ImagePath: PropTypes.string.isRequired,
+    ImagePath: PropTypes.string,
     Genre: PropTypes.shape({
-      Title: PropTypes.string.isRequired,
+      Name: PropTypes.string.isRequired,
       Description: PropTypes.string.isRequired
     }),
     Director: PropTypes.shape({
       Name: PropTypes.string.isRequired,
-      Bio: PropTypes.string.isRequired
+      Bio: PropTypes.string.isRequired,
+      Birth: PropTypes.string,
+      Death: PropTypes.string
     }),
-  }).isRequired
-}
+  }).isRequired,
+  user: PropTypes.shape({
+    FavoriteMovies: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        Name: PropTypes.string.isRequired,
+      })
+    )
+  })
+};
+
+export default MovieView;

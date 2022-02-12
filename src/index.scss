@@ -1,5 +1,8 @@
-$color: steelblue;
+html, body{
+  background: linear-gradient(90deg, rgb(230, 230, 230) 0%, rgb(240, 240, 240) 35%);
+}
 
-.my-flix {
-  color: $color;
+
+.btn:hover{
+  background-color: rgb(65, 65, 65) !important;
 }

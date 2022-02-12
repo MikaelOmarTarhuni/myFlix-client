@@ -1,0 +1,30 @@
+@media screen and (max-width: 768px) {
+    .poster {
+      max-width: 80%;;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .poster {
+      max-width: 70%;;
+    }
+  }
+  
+  @media screen and (min-width: 992px) {
+    .poster {
+      max-width: 65%;;
+    }
+  }
+  
+  @media screen and (min-width: 1200px) {
+    .poster {
+      max-width: 55%;;
+    }
+  }
+  
+  @media screen and (min-width: 1400px) {
+    .poster {
+      max-width: 50%;;
+    }
+  }
+  
